@@ -1,0 +1,1258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Futures Board</title>
+<meta name="description" content="Live pace on 10 NFL futures parlays — 81 legs through week 2 of the 2026 season.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Futures Board">
+<meta property="og:description" content="Live pace on 10 NFL futures parlays — 81 legs through week 2 of the 2026 season.">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+html { -webkit-text-size-adjust:100%; }
+:root { padding-top:env(safe-area-inset-top, 0px); padding-bottom:env(safe-area-inset-bottom, 0px); }
+img { max-width:100%; }
+[hidden] { display:none !important; }
+
+:root {
+  color-scheme: light;
+  --ground:#ECF0EE; --surface:#FFFFFF; --sunk:#F5F8F6;
+  --ink:#101A17; --muted:#596963; --faint:#86958F; --line:#D4DDD9;
+  --accent:#0B6E4F;
+  --good:#0F7450; --warn:#9C6A08; --cold:#AE3627; --lock:#2C6AA8; --null:#86958F;
+  --disp:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground:#0C1211; --surface:#141D1A; --sunk:#101816;
+    --ink:#E2EAE6; --muted:#90A199; --faint:#6D7E77; --line:#26312D;
+    --accent:#3ECD97;
+    --good:#3EC48F; --warn:#D79E3C; --cold:#E0695A; --lock:#6FA6DE; --null:#6D7E77;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground:#0C1211; --surface:#141D1A; --sunk:#101816;
+  --ink:#E2EAE6; --muted:#90A199; --faint:#6D7E77; --line:#26312D;
+  --accent:#3ECD97;
+  --good:#3EC48F; --warn:#D79E3C; --cold:#E0695A; --lock:#6FA6DE; --null:#6D7E77;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--ground); color:var(--ink);
+  font:400 15px/1.55 var(--body);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:1180px; margin:0 auto; padding:0 20px; padding-block:0 56px; }
+
+/* ---- header ---- */
+.top {
+  position:sticky; top:env(safe-area-inset-top, 0px); z-index:20;
+  background:var(--ground); border-bottom:1px solid var(--line);
+}
+.top-in {
+  max-width:1180px; margin:0 auto; padding:14px 20px;
+  display:flex; align-items:baseline; justify-content:space-between;
+  flex-wrap:wrap; gap:8px 18px;
+}
+.brand { font:600 27px/1 var(--disp); letter-spacing:.035em; text-transform:uppercase; margin:0; }
+.brand span { color:var(--accent); }
+.stampline { margin:0; font:500 11px/1 var(--mono); color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
+
+/* ---- summary ---- */
+.tiles { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(118px,1fr)); margin:26px 0 0; }
+.tile { background:var(--surface); border:1px solid var(--line); border-radius:3px; padding:12px 13px; }
+.tile b { display:block; font:600 30px/1 var(--disp); font-variant-numeric:tabular-nums; }
+.tile span { display:block; margin-top:5px; font:500 10px/1.3 var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+.tile.t-good b { color:var(--good); } .tile.t-warn b { color:var(--warn); }
+.tile.t-cold b { color:var(--cold); } .tile.t-lock b { color:var(--lock); }
+
+h2 { font:600 15px/1 var(--mono); letter-spacing:.09em; text-transform:uppercase; color:var(--muted);
+     margin:46px 0 4px; padding-bottom:9px; border-bottom:1px solid var(--line); }
+.lede { margin:12px 0 18px; color:var(--muted); max-width:66ch; font-size:14px; }
+
+/* ---- exposure ---- */
+.scroller { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+.xtable th[scope=row] { text-align:left; font-weight:600; padding:9px 12px 9px 0; white-space:nowrap; }
+.xtable td { padding:9px 10px 9px 0; vertical-align:middle; }
+.xtable tr + tr th, .xtable tr + tr td { border-top:1px solid var(--line); }
+.ct { font:600 16px/1 var(--mono); color:var(--accent); width:2.5em; }
+.xtable td:last-child { text-align:right; white-space:nowrap; width:1%; }
+.xtable td.chips { width:auto; }
+.tm { font:500 10px/1 var(--mono); color:var(--faint); letter-spacing:.06em; margin-left:7px; }
+.chips { display:flex; flex-wrap:wrap; gap:4px; }
+.mini { font:500 10px/1 var(--mono); padding:4px 5px; border-radius:2px; background:var(--sunk);
+        border:1px solid var(--line); color:var(--muted); }
+.mini.m-hit, .mini.m-onpace { color:var(--good); border-color:color-mix(in srgb,var(--good) 40%,transparent); }
+.mini.m-close { color:var(--warn); border-color:color-mix(in srgb,var(--warn) 40%,transparent); }
+.mini.m-offpace, .mini.m-bust { color:var(--cold); border-color:color-mix(in srgb,var(--cold) 40%,transparent); }
+
+/* ---- slips ---- */
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(318px,1fr)); margin-top:18px; }
+.slip { background:var(--surface); border:1px solid var(--line); border-radius:3px; padding:16px 16px 6px; }
+.slip.div { padding-bottom:16px; }
+.slip-head { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+.slip-head div { display:flex; align-items:baseline; gap:9px; min-width:0; }
+.idx { font:600 12px/1 var(--mono); color:var(--accent); }
+.slip-head h3 { margin:0; font:600 20px/1.15 var(--disp); letter-spacing:.02em; text-transform:uppercase; }
+.meta { margin:0; font:500 10px/1.4 var(--mono); color:var(--faint); letter-spacing:.05em;
+        text-transform:uppercase; text-align:right; white-space:nowrap; }
+.score { margin:9px 0 0; font-size:13px; color:var(--muted); }
+.score strong { color:var(--ink); font-weight:600; }
+.sep { color:var(--line); margin:0 4px; }
+
+.legs { list-style:none; margin:14px 0 0; padding:0; }
+.leg { padding:12px 0; border-top:1px solid var(--line); }
+.leg-head { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.who { font-weight:600; font-size:14px; }
+.leg-line { display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-top:3px; }
+.stat { font:500 10px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+.num { font:500 13px/1 var(--mono); font-variant-numeric:tabular-nums; }
+
+.track { position:relative; height:6px; margin:9px 0 7px; background:var(--sunk);
+         border:1px solid var(--line); border-radius:99px; overflow:hidden; }
+.fill { display:block; height:100%; border-radius:99px; background:var(--null); }
+.fill.s-hit, .fill.s-onpace { background:var(--good); }
+.fill.s-close { background:var(--warn); }
+.fill.s-offpace, .fill.s-bust { background:var(--cold); }
+.tick { position:absolute; top:-1px; bottom:-1px; width:2px; background:var(--ink); opacity:.5; }
+
+.leg-foot { display:flex; gap:16px; font:500 11px/1 var(--mono); font-variant-numeric:tabular-nums; color:var(--ink); }
+.leg-foot em { font-style:normal; color:var(--faint); letter-spacing:.06em; text-transform:uppercase; margin-right:4px; }
+.detail { margin:7px 0 0; font-size:12.5px; color:var(--muted); }
+.usage { margin:6px 0 0; font:500 10.5px/1.4 var(--mono); letter-spacing:.04em;
+         color:var(--faint); font-variant-numeric:tabular-nums; }
+.note { margin:5px 0 0; font-size:12.5px; color:var(--warn); }
+
+.chip { font:500 10px/1 var(--mono); letter-spacing:.05em; text-transform:uppercase;
+        padding:4px 7px; border-radius:2px; white-space:nowrap; border:1px solid transparent; }
+.c-hit   { color:var(--lock); background:color-mix(in srgb,var(--lock) 12%,transparent); }
+.c-onpace{ color:var(--good); background:color-mix(in srgb,var(--good) 12%,transparent); }
+.c-close { color:var(--warn); background:color-mix(in srgb,var(--warn) 14%,transparent); }
+.c-offpace,.c-bust { color:var(--cold); background:color-mix(in srgb,var(--cold) 12%,transparent); }
+.c-pending { color:var(--muted); background:var(--sunk); border-color:var(--line); }
+
+/* ---- division ---- */
+.dtable { margin-top:12px; font-size:13px; }
+.dtable th[scope=row] { text-align:left; font:500 10px/1 var(--mono); letter-spacing:.06em;
+                        text-transform:uppercase; color:var(--muted); padding:9px 10px 9px 0; white-space:nowrap; }
+.dtable td { padding:9px 8px 9px 0; }
+.dtable tr + tr th, .dtable tr + tr td { border-top:1px solid var(--line); }
+.tm-cell { font-weight:600; }
+.rec { font:500 12px/1 var(--mono); font-variant-numeric:tabular-nums; color:var(--muted); }
+
+.h2h { margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:3px; padding:16px; }
+.h2h table { font-size:13.5px; }
+.h2h thead th { text-align:left; font:500 10px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase;
+                color:var(--muted); padding:0 10px 10px 0; }
+.h2h th[scope=row] { text-align:left; font:500 10px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase;
+                     color:var(--muted); padding:10px 10px 10px 0; white-space:nowrap; }
+.h2h td { padding:10px 10px 10px 0; font-weight:600; }
+.h2h tbody tr + tr th, .h2h tbody tr + tr td { border-top:1px solid var(--line); }
+.h2h td.agree { color:var(--warn); }
+
+footer { margin-top:46px; padding-top:18px; border-top:1px solid var(--line);
+         font-size:12.5px; color:var(--muted); }
+footer p { margin:0 0 8px; max-width:74ch; }
+footer b { color:var(--ink); font-weight:600; }
+.key { display:flex; flex-wrap:wrap; gap:8px 14px; margin:0 0 14px; padding:0; list-style:none;
+       font:500 11px/1 var(--mono); color:var(--muted); }
+.key li { display:flex; align-items:center; gap:6px; }
+.key i { width:18px; height:6px; border-radius:99px; display:block; }
+@media (max-width:560px) {
+  .brand { font-size:23px; }
+  .meta { text-align:left; }
+  .slip-head { flex-direction:column; gap:4px; }
+}
+@media (prefers-reduced-motion:no-preference) {
+  .fill { transition:width .5s ease; }
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="top-in">
+  <h1 class="brand">Futures <span>Board</span></h1>
+  <p class="stampline">2026 season · through week 2 · updated Sep 22, 2026</p>
+</div></div>
+<div class="wrap">
+
+<div class="tiles">
+  <div class="tile"><b>10</b><span>Slips</span></div>
+  <div class="tile"><b>81</b><span>Legs</span></div>
+  <div class="tile t-lock"><b>0</b><span>Cleared</span></div>
+  <div class="tile t-good"><b>40</b><span>On pace</span></div>
+  <div class="tile t-warn"><b>10</b><span>Borderline</span></div>
+  <div class="tile t-cold"><b>15</b><span>Off pace</span></div>
+</div>
+
+<h2>Where you are doubled up</h2>
+<p class="lede">Players carrying more than one ticket. A bad season for anyone near the top
+of this list moves several slips at once — this is the concentration that a slip-by-slip
+read hides. Numbers are slip IDs; hover one for its line.</p>
+<div class="scroller"><table class="xtable"><tbody>
+<tr>
+  <th scope="row">Kyler Murray<span class="tm">MIN</span></th>
+  <td class="ct">5</td>
+  <td class="chips"><span class="mini m-offpace" title="Slip 1: pass TD 18.5">01</span> <span class="mini m-offpace" title="Slip 3: pass TD 18.5">03</span> <span class="mini m-offpace" title="Slip 4: pass TD 18.5">04</span> <span class="mini m-offpace" title="Slip 6: pass TD 25">06</span> <span class="mini m-offpace" title="Slip 7: pass TD 18.5">07</span></td>
+  <td><span class="chip c-offpace">Off pace</span></td>
+</tr><tr>
+  <th scope="row">Garrett Wilson<span class="tm">NYJ</span></th>
+  <td class="ct">4</td>
+  <td class="chips"><span class="mini m-onpace" title="Slip 2: rec yds 999.5">02</span> <span class="mini m-onpace" title="Slip 3: rec TD 4.5">03</span> <span class="mini m-onpace" title="Slip 7: rec TD 5.5">07</span> <span class="mini m-onpace" title="Slip 8: rec yds 999.5">08</span></td>
+  <td><span class="chip c-onpace">On pace</span></td>
+</tr><tr>
+  <th scope="row">Michael Wilson<span class="tm">ARI</span></th>
+  <td class="ct">4</td>
+  <td class="chips"><span class="mini m-close" title="Slip 1: rec yds 724.5">01</span> <span class="mini m-close" title="Slip 4: rec yds 724.5">04</span> <span class="mini m-close" title="Slip 5: rec yds 724.5">05</span> <span class="mini m-close" title="Slip 7: rec yds 724.5">07</span></td>
+  <td><span class="chip c-close">Borderline</span></td>
+</tr><tr>
+  <th scope="row">Tee Higgins<span class="tm">CIN</span></th>
+  <td class="ct">4</td>
+  <td class="chips"><span class="mini m-onpace" title="Slip 4: rec yds 874.5">04</span> <span class="mini m-onpace" title="Slip 5: rec yds 874.5">05</span> <span class="mini m-onpace" title="Slip 6: rec yds 1,000">06</span> <span class="mini m-onpace" title="Slip 7: rec yds 874.5">07</span></td>
+  <td><span class="chip c-onpace">On pace</span></td>
+</tr><tr>
+  <th scope="row">Bryce Young<span class="tm">CAR</span></th>
+  <td class="ct">3</td>
+  <td class="chips"><span class="mini m-onpace" title="Slip 1: pass TD 20.5">01</span> <span class="mini m-onpace" title="Slip 3: pass TD 20.5">03</span> <span class="mini m-onpace" title="Slip 4: pass TD 20.5">04</span></td>
+  <td><span class="chip c-onpace">On pace</span></td>
+</tr><tr>
+  <th scope="row">Justin Herbert<span class="tm">LAC</span></th>
+  <td class="ct">3</td>
+  <td class="chips"><span class="mini m-offpace" title="Slip 4: pass TD 25.5">04</span> <span class="mini m-offpace" title="Slip 6: pass TD 30">06</span> <span class="mini m-close" title="Slip 8: pass yds 3,650.5">08</span></td>
+  <td><span class="chip c-offpace">Off pace</span></td>
+</tr><tr>
+  <th scope="row">Trevor Lawrence<span class="tm">JAX</span></th>
+  <td class="ct">3</td>
+  <td class="chips"><span class="mini m-close" title="Slip 1: pass yds 3,774.5">01</span> <span class="mini m-close" title="Slip 2: pass yds 3,774.5">02</span> <span class="mini m-close" title="Slip 3: pass yds 3,725.5">03</span></td>
+  <td><span class="chip c-close">Borderline</span></td>
+</tr><tr>
+  <th scope="row">Blake Corum<span class="tm">LAR</span></th>
+  <td class="ct">2</td>
+  <td class="chips"><span class="mini m-onpace" title="Slip 2: rush yds 699.5">02</span> <span class="mini m-onpace" title="Slip 8: rush yds 674.5">08</span></td>
+  <td><span class="chip c-onpace">On pace</span></td>
+</tr><tr>
+  <th scope="row">Chase Brown<span class="tm">CIN</span></th>
+  <td class="ct">2</td>
+  <td class="chips"><span class="mini m-onpace" title="Slip 2: rush yds 849.5">02</span> <span class="mini m-onpace" title="Slip 3: rush yds 850.5">03</span></td>
+  <td><span class="chip c-onpace">On pace</span></td>
+</tr><tr>
+  <th scope="row">J.K. Dobbins<span class="tm">DEN</span></th>
+  <td class="ct">2</td>
+  <td class="chips"><span class="mini m-close" title="Slip 4: rush yds 674.5">04</span> <span class="mini m-offpace" title="Slip 5: rush TD 5.5">05</span></td>
+  <td><span class="chip c-offpace">Off pace</span></td>
+</tr><tr>
+  <th scope="row">Jadarian Price<span class="tm">SEA</span></th>
+  <td class="ct">2</td>
+  <td class="chips"><span class="mini m-onpace" title="Slip 2: rush yds 799.5">02</span> <span class="mini m-onpace" title="Slip 4: rush yds 799.5">04</span></td>
+  <td><span class="chip c-onpace">On pace</span></td>
+</tr><tr>
+  <th scope="row">Ladd McConkey<span class="tm">LAC</span></th>
+  <td class="ct">2</td>
+  <td class="chips"><span class="mini m-onpace" title="Slip 3: rec yds 900.5">03</span> <span class="mini m-onpace" title="Slip 5: rec yds 949.5">05</span></td>
+  <td><span class="chip c-onpace">On pace</span></td>
+</tr><tr>
+  <th scope="row">Omarion Hampton<span class="tm">LAC</span></th>
+  <td class="ct">2</td>
+  <td class="chips"><span class="mini m-onpace" title="Slip 6: rush TD 8">06</span> <span class="mini m-onpace" title="Slip 7: rush TD 7.5">07</span></td>
+  <td><span class="chip c-onpace">On pace</span></td>
+</tr><tr>
+  <th scope="row">Tyler Shough<span class="tm">NO</span></th>
+  <td class="ct">2</td>
+  <td class="chips"><span class="mini m-onpace" title="Slip 2: pass TD 20.5">02</span> <span class="mini m-onpace" title="Slip 7: pass TD 20.5">07</span></td>
+  <td><span class="chip c-onpace">On pace</span></td>
+</tr>
+</tbody></table></div>
+
+<h2>Player prop slips</h2>
+<p class="lede">The marker on each bar is where a leg needs to be right now to be on schedule —
+2 of 17 games, so about 12% of the number. Bar past the marker means ahead of pace.</p>
+<div class="grid">
+<article class="slip">
+  <header class="slip-head">
+    <div><span class="idx">01</span><h3>airport</h3></div>
+    <p class="meta">Unassigned · DraftKings · 7 legs</p>
+  </header>
+  <p class="score"><strong>2</strong> of 7 on track
+     <span class="sep">/</span> 7 still alive</p>
+  <ul class="legs"><li class="leg">
+  <div class="leg-head">
+    <span class="who">Bryce Young<span class="tm">CAR</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 20.5</span></div>
+  <div class="track" role="img" aria-label="At 6 of 20.5"><i class="fill s-onpace" style="width:29.3%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 6</span><span><em>pace</em> 51</span>
+  </div>
+  <p class="detail">Needs 15 more — 1.0/gm over the last 15.</p><p class="usage">73 att · 92% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Kyler Murray<span class="tm">MIN</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 18.5</span></div>
+  <div class="track" role="img" aria-label="At 0 of 18.5"><i class="fill s-offpace" style="width:0.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 0</span><span><em>pace</em> 0</span>
+  </div>
+  <p class="detail">Needs 19 more — 1.3/gm over the last 15.</p><p class="usage">5 att</p><p class="note">Left Week 1 early and missed Week 2 (concussion). Cleared to start Week 3.</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Trevor Lawrence<span class="tm">JAX</span></span>
+    <span class="chip c-close">Borderline</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass yds</span><span class="num">Over 3,774.5</span></div>
+  <div class="track" role="img" aria-label="At 434 of 3,774.5"><i class="fill s-close" style="width:11.5%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 434</span><span><em>pace</em> 3,689</span>
+  </div>
+  <p class="detail">Needs 3,341 more — 222.7/gm over the last 15.</p><p class="usage">52 att · 94% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Saquon Barkley<span class="tm">PHI</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 1,099.5</span></div>
+  <div class="track" role="img" aria-label="At 92 of 1,099.5"><i class="fill s-offpace" style="width:8.4%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 92</span><span><em>pace</em> 782</span>
+  </div>
+  <p class="detail">Needs 1,008 more — 67.2/gm over the last 15.</p><p class="usage">19 car · 2 RZ · 4 tgt · 39% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Christian Watson<span class="tm">GB</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 799.5</span></div>
+  <div class="track" role="img" aria-label="At 188 of 799.5"><i class="fill s-onpace" style="width:23.5%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 188</span><span><em>pace</em> 1,598</span>
+  </div>
+  <p class="detail">Needs 612 more — 40.8/gm over the last 15.</p><p class="usage">19 tgt · 3 RZ · 83% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Michael Wilson<span class="tm">ARI</span></span>
+    <span class="chip c-close">Borderline</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 724.5</span></div>
+  <div class="track" role="img" aria-label="At 74 of 724.5"><i class="fill s-close" style="width:10.2%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 74</span><span><em>pace</em> 629</span>
+  </div>
+  <p class="detail">Needs 651 more — 43.4/gm over the last 15.</p><p class="usage">14 tgt · 0 RZ · 89% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Aaron Rodgers<span class="tm">PIT</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 21.5</span></div>
+  <div class="track" role="img" aria-label="At 1 of 21.5"><i class="fill s-offpace" style="width:4.7%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 1</span><span><em>pace</em> 8.5</span>
+  </div>
+  <p class="detail">Needs 21 more — 1.4/gm over the last 15.</p><p class="usage">79 att · 98% snaps</p>
+</li></ul>
+</article><article class="slip">
+  <header class="slip-head">
+    <div><span class="idx">02</span><h3>Marzo&#x27;s personal</h3></div>
+    <p class="meta">Marzo · DraftKings · 10 legs</p>
+  </header>
+  <p class="score"><strong>8</strong> of 10 on track
+     <span class="sep">/</span> 10 still alive</p>
+  <ul class="legs"><li class="leg">
+  <div class="leg-head">
+    <span class="who">Trevor Lawrence<span class="tm">JAX</span></span>
+    <span class="chip c-close">Borderline</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass yds</span><span class="num">Over 3,774.5</span></div>
+  <div class="track" role="img" aria-label="At 434 of 3,774.5"><i class="fill s-close" style="width:11.5%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 434</span><span><em>pace</em> 3,689</span>
+  </div>
+  <p class="detail">Needs 3,341 more — 222.7/gm over the last 15.</p><p class="usage">52 att · 94% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Tyler Shough<span class="tm">NO</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 20.5</span></div>
+  <div class="track" role="img" aria-label="At 4 of 20.5"><i class="fill s-onpace" style="width:19.5%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 4</span><span><em>pace</em> 34</span>
+  </div>
+  <p class="detail">Needs 17 more — 1.1/gm over the last 15.</p><p class="usage">90 att · 100% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Jadarian Price<span class="tm">SEA</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 799.5</span></div>
+  <div class="track" role="img" aria-label="At 104 of 799.5"><i class="fill s-onpace" style="width:13.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 104</span><span><em>pace</em> 884</span>
+  </div>
+  <p class="detail">Needs 696 more — 46.4/gm over the last 15.</p><p class="usage">23 car · 3 RZ · 4 tgt · 40% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Jaylen Waddle<span class="tm">DEN</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 924.5</span></div>
+  <div class="track" role="img" aria-label="At 140 of 924.5"><i class="fill s-onpace" style="width:15.1%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 140</span><span><em>pace</em> 1,190</span>
+  </div>
+  <p class="detail">Needs 785 more — 52.3/gm over the last 15.</p><p class="usage">13 tgt · 1 RZ · 59% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Mike Evans<span class="tm">SF</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec TD</span><span class="num">Over 6.5</span></div>
+  <div class="track" role="img" aria-label="At 1 of 6.5"><i class="fill s-onpace" style="width:15.4%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 1</span><span><em>pace</em> 8.5</span>
+  </div>
+  <p class="detail">Needs 6 more — 0.4/gm over the last 15.</p><p class="usage">10 tgt · 2 RZ · 66% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Chase Brown<span class="tm">CIN</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 849.5</span></div>
+  <div class="track" role="img" aria-label="At 136 of 849.5"><i class="fill s-onpace" style="width:16.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 136</span><span><em>pace</em> 1,156</span>
+  </div>
+  <p class="detail">Needs 714 more — 47.6/gm over the last 15.</p><p class="usage">36 car · 5 RZ · 11 tgt · 71% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Kenneth Walker III<span class="tm">KC</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 949.5</span></div>
+  <div class="track" role="img" aria-label="At 290 of 949.5"><i class="fill s-onpace" style="width:30.5%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 290</span><span><em>pace</em> 2,465</span>
+  </div>
+  <p class="detail">Needs 660 more — 44.0/gm over the last 15.</p><p class="usage">47 car · 7 RZ · 16 tgt · 76% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Quentin Johnston<span class="tm">LAC</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 674.5</span></div>
+  <div class="track" role="img" aria-label="At 24 of 674.5"><i class="fill s-offpace" style="width:3.6%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 24</span><span><em>pace</em> 204</span>
+  </div>
+  <p class="detail">Needs 651 more — 43.4/gm over the last 15.</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Blake Corum<span class="tm">LAR</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 699.5</span></div>
+  <div class="track" role="img" aria-label="At 133 of 699.5"><i class="fill s-onpace" style="width:19.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 133</span><span><em>pace</em> 1,130.5</span>
+  </div>
+  <p class="detail">Needs 567 more — 37.8/gm over the last 15.</p><p class="usage">22 car · 1 RZ · 1 tgt</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Garrett Wilson<span class="tm">NYJ</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 999.5</span></div>
+  <div class="track" role="img" aria-label="At 136 of 999.5"><i class="fill s-onpace" style="width:13.6%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 136</span><span><em>pace</em> 1,156</span>
+  </div>
+  <p class="detail">Needs 864 more — 57.6/gm over the last 15.</p><p class="usage">14 tgt · 1 RZ · 82% snaps</p>
+</li></ul>
+</article><article class="slip">
+  <header class="slip-head">
+    <div><span class="idx">03</span><h3>Heff and Zo</h3></div>
+    <p class="meta">Both · FanDuel · 7 legs</p>
+  </header>
+  <p class="score"><strong>4</strong> of 7 on track
+     <span class="sep">/</span> 7 still alive</p>
+  <ul class="legs"><li class="leg">
+  <div class="leg-head">
+    <span class="who">Trevor Lawrence<span class="tm">JAX</span></span>
+    <span class="chip c-close">Borderline</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass yds</span><span class="num">Over 3,725.5</span></div>
+  <div class="track" role="img" aria-label="At 434 of 3,725.5"><i class="fill s-close" style="width:11.6%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 434</span><span><em>pace</em> 3,689</span>
+  </div>
+  <p class="detail">Needs 3,292 more — 219.5/gm over the last 15.</p><p class="usage">52 att · 94% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Brock Bowers<span class="tm">LV</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec</span><span class="num">Over 85.5</span></div>
+  <div class="track" role="img" aria-label="At 0 of 85.5"><i class="fill s-offpace" style="width:0.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 0</span><span><em>pace</em> 0</span>
+  </div>
+  <p class="detail">Needs 86 more — 5.7/gm over the last 15.</p><p class="usage">0 tgt · 0 RZ · 0% snaps</p><p class="note">Has not played. Knee surgery since Week 1; practicing and targeting a Week 3 return.</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Chase Brown<span class="tm">CIN</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 850.5</span></div>
+  <div class="track" role="img" aria-label="At 136 of 850.5"><i class="fill s-onpace" style="width:16.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 136</span><span><em>pace</em> 1,156</span>
+  </div>
+  <p class="detail">Needs 715 more — 47.7/gm over the last 15.</p><p class="usage">36 car · 5 RZ · 11 tgt · 71% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Bryce Young<span class="tm">CAR</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 20.5</span></div>
+  <div class="track" role="img" aria-label="At 6 of 20.5"><i class="fill s-onpace" style="width:29.3%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 6</span><span><em>pace</em> 51</span>
+  </div>
+  <p class="detail">Needs 15 more — 1.0/gm over the last 15.</p><p class="usage">73 att · 92% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Ladd McConkey<span class="tm">LAC</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 900.5</span></div>
+  <div class="track" role="img" aria-label="At 117 of 900.5"><i class="fill s-onpace" style="width:13.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 117</span><span><em>pace</em> 994.5</span>
+  </div>
+  <p class="detail">Needs 784 more — 52.3/gm over the last 15.</p><p class="usage">10 tgt · 2 RZ · 47% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Kyler Murray<span class="tm">MIN</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 18.5</span></div>
+  <div class="track" role="img" aria-label="At 0 of 18.5"><i class="fill s-offpace" style="width:0.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 0</span><span><em>pace</em> 0</span>
+  </div>
+  <p class="detail">Needs 19 more — 1.3/gm over the last 15.</p><p class="usage">5 att</p><p class="note">Left Week 1 early and missed Week 2 (concussion). Cleared to start Week 3.</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Garrett Wilson<span class="tm">NYJ</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec TD</span><span class="num">Over 4.5</span></div>
+  <div class="track" role="img" aria-label="At 1 of 4.5"><i class="fill s-onpace" style="width:22.2%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 1</span><span><em>pace</em> 8.5</span>
+  </div>
+  <p class="detail">Needs 4 more — 0.3/gm over the last 15.</p><p class="usage">14 tgt · 1 RZ · 82% snaps</p>
+</li></ul>
+</article><article class="slip">
+  <header class="slip-head">
+    <div><span class="idx">04</span><h3>Heff&#x27;s personal</h3></div>
+    <p class="meta">Eric · 10 legs</p>
+  </header>
+  <p class="score"><strong>5</strong> of 10 on track
+     <span class="sep">/</span> 10 still alive</p>
+  <ul class="legs"><li class="leg">
+  <div class="leg-head">
+    <span class="who">Bryce Young<span class="tm">CAR</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 20.5</span></div>
+  <div class="track" role="img" aria-label="At 6 of 20.5"><i class="fill s-onpace" style="width:29.3%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 6</span><span><em>pace</em> 51</span>
+  </div>
+  <p class="detail">Needs 15 more — 1.0/gm over the last 15.</p><p class="usage">73 att · 92% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Justin Herbert<span class="tm">LAC</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 25.5</span></div>
+  <div class="track" role="img" aria-label="At 2 of 25.5"><i class="fill s-offpace" style="width:7.8%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 2</span><span><em>pace</em> 17</span>
+  </div>
+  <p class="detail">Needs 24 more — 1.6/gm over the last 15.</p><p class="usage">54 att · 100% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Kyler Murray<span class="tm">MIN</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 18.5</span></div>
+  <div class="track" role="img" aria-label="At 0 of 18.5"><i class="fill s-offpace" style="width:0.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 0</span><span><em>pace</em> 0</span>
+  </div>
+  <p class="detail">Needs 19 more — 1.3/gm over the last 15.</p><p class="usage">5 att</p><p class="note">Left Week 1 early and missed Week 2 (concussion). Cleared to start Week 3.</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Tee Higgins<span class="tm">CIN</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 874.5</span></div>
+  <div class="track" role="img" aria-label="At 154 of 874.5"><i class="fill s-onpace" style="width:17.6%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 154</span><span><em>pace</em> 1,309</span>
+  </div>
+  <p class="detail">Needs 721 more — 48.1/gm over the last 15.</p><p class="usage">16 tgt · 0 RZ · 72% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Michael Wilson<span class="tm">ARI</span></span>
+    <span class="chip c-close">Borderline</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 724.5</span></div>
+  <div class="track" role="img" aria-label="At 74 of 724.5"><i class="fill s-close" style="width:10.2%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 74</span><span><em>pace</em> 629</span>
+  </div>
+  <p class="detail">Needs 651 more — 43.4/gm over the last 15.</p><p class="usage">14 tgt · 0 RZ · 89% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Jadarian Price<span class="tm">SEA</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 799.5</span></div>
+  <div class="track" role="img" aria-label="At 104 of 799.5"><i class="fill s-onpace" style="width:13.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 104</span><span><em>pace</em> 884</span>
+  </div>
+  <p class="detail">Needs 696 more — 46.4/gm over the last 15.</p><p class="usage">23 car · 3 RZ · 4 tgt · 40% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">J.K. Dobbins<span class="tm">DEN</span></span>
+    <span class="chip c-close">Borderline</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 674.5</span></div>
+  <div class="track" role="img" aria-label="At 72 of 674.5"><i class="fill s-close" style="width:10.7%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 72</span><span><em>pace</em> 612</span>
+  </div>
+  <p class="detail">Needs 603 more — 40.2/gm over the last 15.</p><p class="usage">18 car</p><p class="note">Hamstring, questionable. Sharing the backfield with RJ Harvey and Jonah Coleman.</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">David Montgomery<span class="tm">HOU</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush TD</span><span class="num">Over 7.5</span></div>
+  <div class="track" role="img" aria-label="At 2 of 7.5"><i class="fill s-onpace" style="width:26.7%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 2</span><span><em>pace</em> 17</span>
+  </div>
+  <p class="detail">Needs 6 more — 0.4/gm over the last 15.</p><p class="usage">26 car · 6 RZ · 5 tgt · 51% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Derrick Henry<span class="tm">BAL</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush TD</span><span class="num">Under 12.5</span></div>
+  <div class="track" role="img" aria-label="At 4 of 12.5"><i class="fill s-offpace" style="width:32.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 4</span><span><em>pace</em> 34</span>
+  </div>
+  <p class="detail">Room for 8 more — can average 0.5/gm and still land under.</p><p class="usage">40 car · 10 RZ · 4 tgt · 54% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Deshaun Watson<span class="tm">CLE</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass yds</span><span class="num">Over 1,549.5</span></div>
+  <div class="track" role="img" aria-label="At 443 of 1,549.5"><i class="fill s-onpace" style="width:28.6%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 443</span><span><em>pace</em> 3,765.5</span>
+  </div>
+  <p class="detail">Needs 1,107 more — 73.8/gm over the last 15.</p><p class="usage">52 att · 100% snaps</p>
+</li></ul>
+</article><article class="slip">
+  <header class="slip-head">
+    <div><span class="idx">05</span><h3>The one I forgot I placed</h3></div>
+    <p class="meta">Eric · 7 legs</p>
+  </header>
+  <p class="score"><strong>5</strong> of 7 on track
+     <span class="sep">/</span> 7 still alive</p>
+  <ul class="legs"><li class="leg">
+  <div class="leg-head">
+    <span class="who">Rome Odunze<span class="tm">CHI</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 799.5</span></div>
+  <div class="track" role="img" aria-label="At 95 of 799.5"><i class="fill s-onpace" style="width:11.9%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 95</span><span><em>pace</em> 807.5</span>
+  </div>
+  <p class="detail">Needs 705 more — 47.0/gm over the last 15.</p><p class="usage">7 tgt · 0 RZ · 66% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Mark Andrews<span class="tm">BAL</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 499.5</span></div>
+  <div class="track" role="img" aria-label="At 98 of 499.5"><i class="fill s-onpace" style="width:19.6%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 98</span><span><em>pace</em> 833</span>
+  </div>
+  <p class="detail">Needs 402 more — 26.8/gm over the last 15.</p><p class="usage">13 tgt · 1 RZ · 71% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Tee Higgins<span class="tm">CIN</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 874.5</span></div>
+  <div class="track" role="img" aria-label="At 154 of 874.5"><i class="fill s-onpace" style="width:17.6%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 154</span><span><em>pace</em> 1,309</span>
+  </div>
+  <p class="detail">Needs 721 more — 48.1/gm over the last 15.</p><p class="usage">16 tgt · 0 RZ · 72% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Ladd McConkey<span class="tm">LAC</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 949.5</span></div>
+  <div class="track" role="img" aria-label="At 117 of 949.5"><i class="fill s-onpace" style="width:12.3%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 117</span><span><em>pace</em> 994.5</span>
+  </div>
+  <p class="detail">Needs 833 more — 55.5/gm over the last 15.</p><p class="usage">10 tgt · 2 RZ · 47% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Michael Wilson<span class="tm">ARI</span></span>
+    <span class="chip c-close">Borderline</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 724.5</span></div>
+  <div class="track" role="img" aria-label="At 74 of 724.5"><i class="fill s-close" style="width:10.2%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 74</span><span><em>pace</em> 629</span>
+  </div>
+  <p class="detail">Needs 651 more — 43.4/gm over the last 15.</p><p class="usage">14 tgt · 0 RZ · 89% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Bhayshul Tuten<span class="tm">JAX</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush TD</span><span class="num">Over 5.5</span></div>
+  <div class="track" role="img" aria-label="At 1 of 5.5"><i class="fill s-onpace" style="width:18.2%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 1</span><span><em>pace</em> 8.5</span>
+  </div>
+  <p class="detail">Needs 5 more — 0.3/gm over the last 15.</p><p class="usage">28 car · 2 RZ · 3 tgt · 50% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">J.K. Dobbins<span class="tm">DEN</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush TD</span><span class="num">Over 5.5</span></div>
+  <div class="track" role="img" aria-label="At 0 of 5.5"><i class="fill s-offpace" style="width:0.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 0</span><span><em>pace</em> 0</span>
+  </div>
+  <p class="detail">Needs 6 more — 0.4/gm over the last 15.</p><p class="usage">18 car</p><p class="note">Hamstring, questionable. Sharing the backfield with RJ Harvey and Jonah Coleman.</p>
+</li></ul>
+</article><article class="slip">
+  <header class="slip-head">
+    <div><span class="idx">06</span><h3>Alt-line hail mary</h3></div>
+    <p class="meta">Eric · 8 legs</p>
+  </header>
+  <p class="score"><strong>5</strong> of 8 on track
+     <span class="sep">/</span> 8 still alive</p>
+  <ul class="legs"><li class="leg">
+  <div class="leg-head">
+    <span class="who">Justin Herbert<span class="tm">LAC</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">30+</span></div>
+  <div class="track" role="img" aria-label="At 2 of 30"><i class="fill s-offpace" style="width:6.7%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 2</span><span><em>pace</em> 17</span>
+  </div>
+  <p class="detail">Needs 28 more — 1.9/gm over the last 15.</p><p class="usage">54 att · 100% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Dak Prescott<span class="tm">DAL</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">30+</span></div>
+  <div class="track" role="img" aria-label="At 6 of 30"><i class="fill s-onpace" style="width:20.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 6</span><span><em>pace</em> 51</span>
+  </div>
+  <p class="detail">Needs 24 more — 1.6/gm over the last 15.</p><p class="usage">65 att · 100% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Jonathan Taylor<span class="tm">IND</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush TD</span><span class="num">12+</span></div>
+  <div class="track" role="img" aria-label="At 4 of 12"><i class="fill s-onpace" style="width:33.3%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 4</span><span><em>pace</em> 34</span>
+  </div>
+  <p class="detail">Needs 8 more — 0.5/gm over the last 15.</p><p class="usage">43 car · 10 RZ · 8 tgt · 92% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Christian McCaffrey<span class="tm">SF</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush TD</span><span class="num">8+</span></div>
+  <div class="track" role="img" aria-label="At 2 of 8"><i class="fill s-onpace" style="width:25.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 2</span><span><em>pace</em> 17</span>
+  </div>
+  <p class="detail">Needs 6 more — 0.4/gm over the last 15.</p><p class="usage">20 car · 6 RZ · 12 tgt · 54% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Travis Etienne Jr.<span class="tm">NO</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush TD</span><span class="num">5+</span></div>
+  <div class="track" role="img" aria-label="At 0 of 5"><i class="fill s-offpace" style="width:0.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 0</span><span><em>pace</em> 0</span>
+  </div>
+  <p class="detail">Needs 5 more — 0.3/gm over the last 15.</p><p class="usage">17 car · 3 RZ · 11 tgt · 57% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Tee Higgins<span class="tm">CIN</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">1,000+</span></div>
+  <div class="track" role="img" aria-label="At 154 of 1,000"><i class="fill s-onpace" style="width:15.4%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 154</span><span><em>pace</em> 1,309</span>
+  </div>
+  <p class="detail">Needs 846 more — 56.4/gm over the last 15.</p><p class="usage">16 tgt · 0 RZ · 72% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Omarion Hampton<span class="tm">LAC</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush TD</span><span class="num">8+</span></div>
+  <div class="track" role="img" aria-label="At 2 of 8"><i class="fill s-onpace" style="width:25.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 2</span><span><em>pace</em> 17</span>
+  </div>
+  <p class="detail">Needs 6 more — 0.4/gm over the last 15.</p><p class="usage">35 car · 4 RZ · 2 tgt · 61% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Kyler Murray<span class="tm">MIN</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">25+</span></div>
+  <div class="track" role="img" aria-label="At 0 of 25"><i class="fill s-offpace" style="width:0.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 0</span><span><em>pace</em> 0</span>
+  </div>
+  <p class="detail">Needs 25 more — 1.7/gm over the last 15.</p><p class="usage">5 att</p><p class="note">Left Week 1 early and missed Week 2 (concussion). Cleared to start Week 3.</p>
+</li></ul>
+</article><article class="slip">
+  <header class="slip-head">
+    <div><span class="idx">07</span><h3>Madeira Fantasy League group parlay</h3></div>
+    <p class="meta">Group · 8 legs</p>
+  </header>
+  <p class="score"><strong>6</strong> of 8 on track
+     <span class="sep">/</span> 8 still alive</p>
+  <ul class="legs"><li class="leg">
+  <div class="leg-head">
+    <span class="who">Garrett Wilson<span class="tm">NYJ</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec TD</span><span class="num">Over 5.5</span></div>
+  <div class="track" role="img" aria-label="At 1 of 5.5"><i class="fill s-onpace" style="width:18.2%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 1</span><span><em>pace</em> 8.5</span>
+  </div>
+  <p class="detail">Needs 5 more — 0.3/gm over the last 15.</p><p class="usage">14 tgt · 1 RZ · 82% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">DJ Moore<span class="tm">BUF</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 849.5</span></div>
+  <div class="track" role="img" aria-label="At 100 of 849.5"><i class="fill s-onpace" style="width:11.8%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 100</span><span><em>pace</em> 850</span>
+  </div>
+  <p class="detail">Needs 750 more — 50.0/gm over the last 15.</p><p class="usage">8 tgt · 0 RZ · 51% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Tee Higgins<span class="tm">CIN</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 874.5</span></div>
+  <div class="track" role="img" aria-label="At 154 of 874.5"><i class="fill s-onpace" style="width:17.6%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 154</span><span><em>pace</em> 1,309</span>
+  </div>
+  <p class="detail">Needs 721 more — 48.1/gm over the last 15.</p><p class="usage">16 tgt · 0 RZ · 72% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Michael Wilson<span class="tm">ARI</span></span>
+    <span class="chip c-close">Borderline</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 724.5</span></div>
+  <div class="track" role="img" aria-label="At 74 of 724.5"><i class="fill s-close" style="width:10.2%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 74</span><span><em>pace</em> 629</span>
+  </div>
+  <p class="detail">Needs 651 more — 43.4/gm over the last 15.</p><p class="usage">14 tgt · 0 RZ · 89% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Parker Washington<span class="tm">JAX</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 824.5</span></div>
+  <div class="track" role="img" aria-label="At 181 of 824.5"><i class="fill s-onpace" style="width:22.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 181</span><span><em>pace</em> 1,538.5</span>
+  </div>
+  <p class="detail">Needs 644 more — 42.9/gm over the last 15.</p><p class="usage">18 tgt · 0 RZ · 72% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Omarion Hampton<span class="tm">LAC</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush TD</span><span class="num">Over 7.5</span></div>
+  <div class="track" role="img" aria-label="At 2 of 7.5"><i class="fill s-onpace" style="width:26.7%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 2</span><span><em>pace</em> 17</span>
+  </div>
+  <p class="detail">Needs 6 more — 0.4/gm over the last 15.</p><p class="usage">35 car · 4 RZ · 2 tgt · 61% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Kyler Murray<span class="tm">MIN</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 18.5</span></div>
+  <div class="track" role="img" aria-label="At 0 of 18.5"><i class="fill s-offpace" style="width:0.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 0</span><span><em>pace</em> 0</span>
+  </div>
+  <p class="detail">Needs 19 more — 1.3/gm over the last 15.</p><p class="usage">5 att</p><p class="note">Left Week 1 early and missed Week 2 (concussion). Cleared to start Week 3.</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Tyler Shough<span class="tm">NO</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass TD</span><span class="num">Over 20.5</span></div>
+  <div class="track" role="img" aria-label="At 4 of 20.5"><i class="fill s-onpace" style="width:19.5%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 4</span><span><em>pace</em> 34</span>
+  </div>
+  <p class="detail">Needs 17 more — 1.1/gm over the last 15.</p><p class="usage">90 att · 100% snaps</p>
+</li></ul>
+</article><article class="slip">
+  <header class="slip-head">
+    <div><span class="idx">08</span><h3>Marzo&#x27;s one dollar lay</h3></div>
+    <p class="meta">Marzo · 8 legs</p>
+  </header>
+  <p class="score"><strong>5</strong> of 8 on track
+     <span class="sep">/</span> 8 still alive</p>
+  <ul class="legs"><li class="leg">
+  <div class="leg-head">
+    <span class="who">Justin Herbert<span class="tm">LAC</span></span>
+    <span class="chip c-close">Borderline</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass yds</span><span class="num">Over 3,650.5</span></div>
+  <div class="track" role="img" aria-label="At 401 of 3,650.5"><i class="fill s-close" style="width:11.0%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 401</span><span><em>pace</em> 3,408.5</span>
+  </div>
+  <p class="detail">Needs 3,250 more — 216.7/gm over the last 15.</p><p class="usage">54 att · 100% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Emeka Egbuka<span class="tm">TB</span></span>
+    <span class="chip c-offpace">Off pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 924.5</span></div>
+  <div class="track" role="img" aria-label="At 79 of 924.5"><i class="fill s-offpace" style="width:8.5%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 79</span><span><em>pace</em> 671.5</span>
+  </div>
+  <p class="detail">Needs 846 more — 56.4/gm over the last 15.</p><p class="usage">11 tgt · 1 RZ · 86% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Garrett Wilson<span class="tm">NYJ</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rec yds</span><span class="num">Over 999.5</span></div>
+  <div class="track" role="img" aria-label="At 136 of 999.5"><i class="fill s-onpace" style="width:13.6%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 136</span><span><em>pace</em> 1,156</span>
+  </div>
+  <p class="detail">Needs 864 more — 57.6/gm over the last 15.</p><p class="usage">14 tgt · 1 RZ · 82% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Joe Burrow<span class="tm">CIN</span></span>
+    <span class="chip c-close">Borderline</span>
+  </div>
+  <div class="leg-line"><span class="stat">pass yds</span><span class="num">Over 3,999.5</span></div>
+  <div class="track" role="img" aria-label="At 461 of 3,999.5"><i class="fill s-close" style="width:11.5%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 461</span><span><em>pace</em> 3,918.5</span>
+  </div>
+  <p class="detail">Needs 3,539 more — 235.9/gm over the last 15.</p><p class="usage">66 att · 100% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Blake Corum<span class="tm">LAR</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 674.5</span></div>
+  <div class="track" role="img" aria-label="At 133 of 674.5"><i class="fill s-onpace" style="width:19.7%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 133</span><span><em>pace</em> 1,130.5</span>
+  </div>
+  <p class="detail">Needs 542 more — 36.1/gm over the last 15.</p><p class="usage">22 car · 1 RZ · 1 tgt</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Jacory Croskey-Merritt<span class="tm">WAS</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 574.5</span></div>
+  <div class="track" role="img" aria-label="At 106 of 574.5"><i class="fill s-onpace" style="width:18.5%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 106</span><span><em>pace</em> 901</span>
+  </div>
+  <p class="detail">Needs 469 more — 31.3/gm over the last 15.</p><p class="usage">28 car · 2 RZ · 2 tgt · 43% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Ashton Jeanty<span class="tm">LV</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Over 974.5</span></div>
+  <div class="track" role="img" aria-label="At 150 of 974.5"><i class="fill s-onpace" style="width:15.4%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 150</span><span><em>pace</em> 1,275</span>
+  </div>
+  <p class="detail">Needs 825 more — 55.0/gm over the last 15.</p><p class="usage">44 car · 9 RZ · 13 tgt · 77% snaps</p>
+</li><li class="leg">
+  <div class="leg-head">
+    <span class="who">Jeremiyah Love<span class="tm">ARI</span></span>
+    <span class="chip c-onpace">On pace</span>
+  </div>
+  <div class="leg-line"><span class="stat">rush yds</span><span class="num">Under 824.5</span></div>
+  <div class="track" role="img" aria-label="At 70 of 824.5"><i class="fill s-onpace" style="width:8.5%"></i><b class="tick" style="left:11.76%"></b></div>
+  <div class="leg-foot">
+    <span><em>now</em> 70</span><span><em>pace</em> 595</span>
+  </div>
+  <p class="detail">Room for 754 more — can average 50.3/gm and still land under.</p><p class="usage">20 car · 5 RZ · 7 tgt · 42% snaps</p>
+</li></ul>
+</article>
+</div>
+
+<h2>Division winners</h2>
+<p class="lede">Different bet, different math — no pace bar applies. These two slips oppose each
+other in six of eight divisions, so at most one can cash, and both need the Bills and the
+Bengals, the only picks they share.</p>
+<div class="grid">
+<article class="slip div">
+  <header class="slip-head">
+    <div><span class="idx">09</span><h3>Marzo&#x27;s division winners</h3></div>
+    <p class="meta">Marzo · 8 legs</p>
+  </header>
+  <p class="score"><strong>4</strong> of 8 leading or tied</p>
+  <table class="dtable"><tbody><tr>
+  <th scope="row">AFC East</th>
+  <td class="tm-cell">Bills</td>
+  <td class="rec">2-0</td>
+  <td><span class="chip c-onpace">
+    Leads
+  </span></td>
+</tr><tr>
+  <th scope="row">AFC North</th>
+  <td class="tm-cell">Bengals</td>
+  <td class="rec">2-0</td>
+  <td><span class="chip c-onpace">
+    Leads
+  </span></td>
+</tr><tr>
+  <th scope="row">AFC South</th>
+  <td class="tm-cell">Texans</td>
+  <td class="rec">0-2</td>
+  <td><span class="chip c-close">
+    Tied 2nd
+  </span></td>
+</tr><tr>
+  <th scope="row">AFC West</th>
+  <td class="tm-cell">Chargers</td>
+  <td class="rec">0-2</td>
+  <td><span class="chip c-offpace">
+    4th
+  </span></td>
+</tr><tr>
+  <th scope="row">NFC East</th>
+  <td class="tm-cell">Eagles</td>
+  <td class="rec">2-0</td>
+  <td><span class="chip c-onpace">
+    Leads
+  </span></td>
+</tr><tr>
+  <th scope="row">NFC North</th>
+  <td class="tm-cell">Bears</td>
+  <td class="rec">1-1</td>
+  <td><span class="chip c-close">
+    Tied 2nd
+  </span></td>
+</tr><tr>
+  <th scope="row">NFC South</th>
+  <td class="tm-cell">Saints</td>
+  <td class="rec">1-1</td>
+  <td><span class="chip c-onpace">
+    Tied 1st
+  </span></td>
+</tr><tr>
+  <th scope="row">NFC West</th>
+  <td class="tm-cell">Rams</td>
+  <td class="rec">1-1</td>
+  <td><span class="chip c-offpace">
+    Tied 3rd
+  </span></td>
+</tr></tbody></table>
+</article><article class="slip div">
+  <header class="slip-head">
+    <div><span class="idx">10</span><h3>Hoeffel division winners</h3></div>
+    <p class="meta">Eric · 8 legs</p>
+  </header>
+  <p class="score"><strong>7</strong> of 8 leading or tied</p>
+  <table class="dtable"><tbody><tr>
+  <th scope="row">AFC East</th>
+  <td class="tm-cell">Bills</td>
+  <td class="rec">2-0</td>
+  <td><span class="chip c-onpace">
+    Leads
+  </span></td>
+</tr><tr>
+  <th scope="row">AFC North</th>
+  <td class="tm-cell">Bengals</td>
+  <td class="rec">2-0</td>
+  <td><span class="chip c-onpace">
+    Leads
+  </span></td>
+</tr><tr>
+  <th scope="row">AFC South</th>
+  <td class="tm-cell">Jaguars</td>
+  <td class="rec">1-1</td>
+  <td><span class="chip c-onpace">
+    Leads
+  </span></td>
+</tr><tr>
+  <th scope="row">AFC West</th>
+  <td class="tm-cell">Chiefs</td>
+  <td class="rec">2-0</td>
+  <td><span class="chip c-onpace">
+    Tied 1st
+  </span></td>
+</tr><tr>
+  <th scope="row">NFC East</th>
+  <td class="tm-cell">Cowboys</td>
+  <td class="rec">1-1</td>
+  <td><span class="chip c-close">
+    Tied 2nd
+  </span></td>
+</tr><tr>
+  <th scope="row">NFC North</th>
+  <td class="tm-cell">Vikings</td>
+  <td class="rec">2-0</td>
+  <td><span class="chip c-onpace">
+    Leads
+  </span></td>
+</tr><tr>
+  <th scope="row">NFC South</th>
+  <td class="tm-cell">Panthers</td>
+  <td class="rec">1-1</td>
+  <td><span class="chip c-onpace">
+    Tied 1st
+  </span></td>
+</tr><tr>
+  <th scope="row">NFC West</th>
+  <td class="tm-cell">Seahawks</td>
+  <td class="rec">2-0</td>
+  <td><span class="chip c-onpace">
+    Tied 1st
+  </span></td>
+</tr></tbody></table>
+</article>
+</div>
+
+<div class="h2h">
+  <div class="scroller"><table>
+    <thead><tr><th>Division</th><th>Marzo · slip 09</th><th>Eric · slip 10</th></tr></thead>
+    <tbody><tr>
+  <th scope="row">AFC East</th>
+  <td class="agree">Bills <span class="rec">2-0</span></td>
+  <td class="agree">Bills <span class="rec">2-0</span></td>
+</tr><tr>
+  <th scope="row">AFC North</th>
+  <td class="agree">Bengals <span class="rec">2-0</span></td>
+  <td class="agree">Bengals <span class="rec">2-0</span></td>
+</tr><tr>
+  <th scope="row">AFC South</th>
+  <td class="">Texans <span class="rec">0-2</span></td>
+  <td class="">Jaguars <span class="rec">1-1</span></td>
+</tr><tr>
+  <th scope="row">AFC West</th>
+  <td class="">Chargers <span class="rec">0-2</span></td>
+  <td class="">Chiefs <span class="rec">2-0</span></td>
+</tr><tr>
+  <th scope="row">NFC East</th>
+  <td class="">Eagles <span class="rec">2-0</span></td>
+  <td class="">Cowboys <span class="rec">1-1</span></td>
+</tr><tr>
+  <th scope="row">NFC North</th>
+  <td class="">Bears <span class="rec">1-1</span></td>
+  <td class="">Vikings <span class="rec">2-0</span></td>
+</tr><tr>
+  <th scope="row">NFC South</th>
+  <td class="">Saints <span class="rec">1-1</span></td>
+  <td class="">Panthers <span class="rec">1-1</span></td>
+</tr><tr>
+  <th scope="row">NFC West</th>
+  <td class="">Rams <span class="rec">1-1</span></td>
+  <td class="">Seahawks <span class="rec">2-0</span></td>
+</tr></tbody>
+  </table></div>
+</div>
+
+<footer>
+  <ul class="key">
+    <li><i style="background:var(--lock)"></i>Cleared</li>
+    <li><i style="background:var(--good)"></i>On pace</li>
+    <li><i style="background:var(--warn)"></i>Borderline</li>
+    <li><i style="background:var(--cold)"></i>Off pace</li>
+    <li><i style="background:var(--null)"></i>No data</li>
+  </ul>
+  <p><b>How pace is figured.</b> Season totals come from ESPN, cross-checked against NFL.com.
+  Projection is the player's production per team game carried across all 17 games —
+  so a player who missed time is projected on his team's schedule, not his own, and is flagged
+  where that matters. "Borderline" means the projection lands within 15% of the number.</p>
+  <p><b>Alt lines.</b> Slip 06 uses inclusive thresholds: 30+ TDs means 30 wins, where a 29.5 line
+  would need 30 as well but can never push. Those legs are figured against the exact number.</p>
+  <p><b>The grey line under each leg is workload</b> — pass attempts, carries and red-zone
+  touches, targets, and share of the team's offensive snaps. Two games is a small sample, so
+  volume often says more than the total does: a receiver on the field for most snaps and
+  drawing targets has a path to his number even when the yards have not arrived yet, and one
+  producing without the snaps does not.</p>
+  <p>Refreshed weekly after the week's games. Season totals from Sleeper, spot-checked against
+  ESPN and NFL.com. Lines and slips as supplied; no stakes or odds recorded yet, so no payout
+  or live probability is shown.</p>
+</footer>
+</div>
+</body>
+</html>
